@@ -1,0 +1,4 @@
+<h2><%= course.name %></h2>
+<p><%= course.code %></p>
+<a href="/courses/<%= course.id %>/edit">Update</a>
+<%- include('../partials/deleteForm', { url: `/courses/${course.id}` }) %>

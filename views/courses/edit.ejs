@@ -1,0 +1,6 @@
+<h2>Update Course</h2>
+<form action="/courses/<%= course.id %>?_method=PUT" method="POST">
+    <%- include('_form_fields') %>
+    <button type="submit">Update</button>
+    <a href="/courses/<%= course.id %>">Cancel</a> 
+</form>
