@@ -1,0 +1,27 @@
+<div>
+    <label>Title</label>
+    <input type="text" name="title" value="<%= assignment.title %>">
+</div>
+
+<div>
+    <label>Course</label>
+    <select name="course">
+        <% courses.forEach(course => { %> 
+            <% if (course.id == assignment.course) { %> 
+                <option selected label="<%= course.name %>" value="<%= course.id %>"></option>
+            <% } else { %> 
+                <option label="<%= course.name %>" value="<%= course.id %>"></option>
+            <% } %> 
+        <% }) %> 
+    </select>
+</div>
+
+<div>
+    <label>Document</label>
+    <input type="file" name="document" class="filepond">
+</div>
+
+<div>
+    <label>Description</label>
+    <textarea name="description"><%= assignment.description %></textarea>
+</div>

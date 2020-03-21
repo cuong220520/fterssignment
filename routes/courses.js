@@ -68,7 +68,7 @@ router.delete('/:id', async(req, res) => {
         await course.remove()
         res.redirect('/courses')
     } catch {
-        res.render('courses/index', {
+        res.render('courses/show', {
             course: course,
             errorMessage: 'Deleting course error!'
         })

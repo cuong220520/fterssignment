@@ -12,13 +12,16 @@ const indexRouter = require('./routes/index')
 const assignmentRouter = require('./routes/assignments')
 const courseRouter = require('./routes/courses')
 
+
+app.use(bodyParser.urlencoded({ limit: '10mb', extended: false }))
 app.use(express.urlencoded({ extended: false }))
+
 app.set('view engine', 'ejs')
 app.set('views', __dirname + '/views')
 app.set('layout', 'layouts/layout')
 app.use(expressLayouts)
-app.use(bodyParser.urlencoded({ limit: '10mb', extended: false }))
 app.use(methodOverride('_method'))
+app.use(express.static('public'))
 
 const mongoose = require('mongoose')
 mongoose.connect(process.env.DATABASE_URL, { useNewUrlParser: true, useUnifiedTopology: true })

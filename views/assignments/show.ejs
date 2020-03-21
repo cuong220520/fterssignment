@@ -1,0 +1,6 @@
+<h2><%= assignment.title %></h2>
+<p>Course: <%= assignment.course.name %></p>
+<a href="<%= assignment.documentPath %>" download="<%= assignment.title %>">Document</a>
+<p>Description: <%= assignment.description %></p>
+<a href="/assignments/<%= assignment.id %>/edit">Update</a>
+<%- include('../partials/deleteForm', { url: `/assignments/${assignment.id}` }) %> 
