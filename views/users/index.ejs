@@ -1,0 +1,11 @@
+<h2>User Profile</h2>
+<p>ID: <%= user.userID %></p>
+<p>Name: <%= user.name %></p>
+<% if (assignmentsByUser.length > 0) { %> 
+    <h2>Assignments By User</h2>
+    <% assignmentsByUser.forEach(assignment => { %>
+        <a href="/assignments/<%= assignment.id %>"><%= assignment.title %></a>
+        <a href="/assignments/<%= assignment.id %>/edit">Update</a>
+        <%- include('../partials/deleteForm', { url: `/assignments/${assignment.id}` }) %> 
+    <% }) %> 
+<% } %> 

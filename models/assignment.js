@@ -21,6 +21,11 @@ const assignmentSchema = new mongoose.Schema({
     documentType: {
         type: String,
         required: true
+    },
+    author: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: 'User'
     }
 })
 

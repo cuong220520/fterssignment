@@ -3,7 +3,9 @@ const router = express.Router()
 
 const Course = require('../models/course')
 
-router.get('/', async (req, res) => {
+const checkAuthenticated = require('../check-authenticated')
+
+router.get('/', checkAuthenticated, async (req, res) => {
     let courses
     try {
         courses = await Course.find().sort('desc')
@@ -13,11 +15,11 @@ router.get('/', async (req, res) => {
     res.render('courses/index', { courses: courses })
 })
 
-router.get('/new', (req, res) => {
+router.get('/new', checkAuthenticated, (req, res) => {
     renderNewPage(res, new Course())
 })
 
-router.post('/', async (req, res) => {
+router.post('/', checkAuthenticated, async (req, res) => {
     const course = new Course({
         name: req.body.name,
         code: req.body.code
@@ -30,7 +32,7 @@ router.post('/', async (req, res) => {
     }
 })
 
-router.get('/:id', async(req, res) => {
+router.get('/:id', checkAuthenticated, async(req, res) => {
     try {
         const course = await Course.findById(req.params.id)
         res.render('courses/show', {course: course})
@@ -39,7 +41,7 @@ router.get('/:id', async(req, res) => {
     }
 })
 
-router.get('/:id/edit', async (req, res) => {
+router.get('/:id/edit', checkAuthenticated, async (req, res) => {
     try {
         const course = await Course.findById(req.params.id)
         renderEditPage(res, course)
@@ -48,7 +50,7 @@ router.get('/:id/edit', async (req, res) => {
     }
 })
 
-router.put('/:id', async(req, res) => {
+router.put('/:id', checkAuthenticated, async(req, res) => {
     let course 
     try {
         course = await Course.findById(req.params.id)
@@ -61,7 +63,7 @@ router.put('/:id', async(req, res) => {
     }
 })
 
-router.delete('/:id', async(req, res) => {
+router.delete('/:id', checkAuthenticated, async(req, res) => {
     let course
     try {
         course = await Course.findById(req.params.id)

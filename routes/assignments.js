@@ -1,13 +1,14 @@
 const express = require('express')
 const router = express.Router()
-const mongoose = require('mongoose')
 
 const Assignment = require('../models/assignment')
 const Course = require('../models/course')
 
 const documentMimeType = ['application/pdf']
 
-router.get('/', async (req, res) => {
+const checkAuthenticated = require('../check-authenticated')
+
+router.get('/', checkAuthenticated, async (req, res) => {
     let assignments
     try {
         assignments = await Assignment.find().sort('desc')
@@ -17,15 +18,16 @@ router.get('/', async (req, res) => {
     res.render('assignments/index', { assignments: assignments })
 })
 
-router.get('/new', (req, res) => {
+router.get('/new', checkAuthenticated, (req, res) => {
     renderNewPage(res, new Assignment())
 })
 
-router.post('/', async(req, res) => {
+router.post('/', checkAuthenticated, async(req, res) => {
     const assignment = new Assignment({
         title: req.body.title,
         course: req.body.course,
-        description: req.body.description
+        description: req.body.description,
+        author: req.user.id
     })
     saveDocument(assignment, req.body.document)
     try {
@@ -37,11 +39,9 @@ router.post('/', async(req, res) => {
     }
 })
 
-router.get('/:id', async (req, res) => {
+router.get('/:id', checkAuthenticated, async (req, res) => {
     try {
-        const assignment = await Assignment.findById(req.params.id).populate('course').exec()
-        //const course = await Course.find({ assignment: assignment.course }).exec()
-        //console.log(assignment.course)
+        const assignment = await Assignment.findById(req.params.id).populate('course').populate('author').exec()
         res.render('assignments/show', { assignment: assignment })
     } catch(err) {
         console.log(err)
@@ -49,7 +49,7 @@ router.get('/:id', async (req, res) => {
     }
 })
 
-router.get('/:id/edit', async (req, res) => {
+router.get('/:id/edit', checkAuthenticated, async (req, res) => {
     try {
         const assignment = await Assignment.findById(req.params.id)
         renderEditPage(res, assignment)
@@ -58,7 +58,7 @@ router.get('/:id/edit', async (req, res) => {
     }
 })
 
-router.put('/:id', async (req, res) => {
+router.put('/:id', checkAuthenticated, async (req, res) => {
     let assignment
     try {
         assignment = await Assignment.findById(req.params.id)
@@ -80,12 +80,12 @@ router.put('/:id', async (req, res) => {
     }
 })
 
-router.delete('/:id', async(req, res) => {
+router.delete('/:id', checkAuthenticated, async(req, res) => {
     let assignment
     try {
         assignment = await Assignment.findById(req.params.id)
         assignment.remove()
-        res.redirect('/assignments')
+        res.redirect('back')
     } catch {
         res.render('assignments/show', {
             assignment: assignment,

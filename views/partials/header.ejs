@@ -1,8 +1,18 @@
 <header>
     <ul>
-        <li><a href="/courses">All Courses</a></li>
-        <li><a href="/courses/new">Add Courses</a></li>
-        <li><a href="/assignments/new">Add Assignment</a></li>
-        <li><a href="/assignments">All Assignments</a></li>
-    </ul>
+        <li><a href="/">Fterssignment</a></li>
+        <% if (isAuthenticated) { %> 
+            <li><a href="/courses">All Courses</a></li>
+            <li><a href="/courses/new">Add Courses</a></li>
+            <li><a href="/assignments/new">Add Assignment</a></li>
+            <li><a href="/assignments">All Assignments</a></li>
+            <form action="/logout?_method=DELETE" method="POST">
+                <button type="submit">Logout</button>
+            </form>
+            <li><a href="/users/<%= currentUser.id %>"><%= currentUser.name %></a></li>
+        <% } else { %> 
+            <li><a href="/login">Login</a></li>
+        <% } %> 
+        
+    </ul>   
 </header>
