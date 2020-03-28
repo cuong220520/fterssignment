@@ -8,6 +8,11 @@ const courseSchema = new mongoose.Schema({
     code: {
         type: String,
         required: true
+    },
+    major: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: 'Major'
     }
 })
 

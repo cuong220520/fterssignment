@@ -9,13 +9,33 @@ const documentMimeType = ['application/pdf']
 const checkAuthenticated = require('../check-authenticated')
 
 router.get('/', checkAuthenticated, async (req, res) => {
-    let assignments
-    try {
-        assignments = await Assignment.find().sort('desc')
-    } catch {
-        assignments = []
+    searchOptions = {}
+
+    if (req.query.title != null && req.query.title != '') {
+        searchOptions.title = new RegExp(req.query.title, 'i')
     }
-    res.render('assignments/index', { assignments: assignments })
+
+    if (req.query.grade != null && req.query.grade != '') {
+        searchOptions.grade = new RegExp(req.query.grade, 'i')
+    }
+
+    try {
+        const assignments = await Assignment.find(searchOptions)
+        res.render('assignments/index', {
+            assignments: assignments,
+            searchOptions: req.query
+        })
+    } catch {
+        res.redirect('/assignments')
+    }
+
+    // let assignments
+    // try {
+    //     assignments = await Assignment.find().sort('desc')
+    // } catch {
+    //     assignments = []
+    // }
+    // res.render('assignments/index', { assignments: assignments })
 })
 
 router.get('/new', checkAuthenticated, (req, res) => {
@@ -23,11 +43,13 @@ router.get('/new', checkAuthenticated, (req, res) => {
 })
 
 router.post('/', checkAuthenticated, async(req, res) => {
+    const changedTitle = req.body.title + ' - ' + req.user.name
     const assignment = new Assignment({
-        title: req.body.title,
+        title: changedTitle,
         course: req.body.course,
         description: req.body.description,
-        author: req.user.id
+        author: req.user.id,
+        grade: req.body.grade
     })
     saveDocument(assignment, req.body.document)
     try {
@@ -42,7 +64,9 @@ router.post('/', checkAuthenticated, async(req, res) => {
 router.get('/:id', checkAuthenticated, async (req, res) => {
     try {
         const assignment = await Assignment.findById(req.params.id).populate('course').populate('author').exec()
-        res.render('assignments/show', { assignment: assignment })
+        const user = req.user
+        const comments = Comment.findById(req.params.id)
+        res.render('assignments/show', { assignment: assignment, user: user, commentsByUser: comments })
     } catch(err) {
         console.log(err)
         res.redirect('/assignments')
@@ -61,8 +85,9 @@ router.get('/:id/edit', checkAuthenticated, async (req, res) => {
 router.put('/:id', checkAuthenticated, async (req, res) => {
     let assignment
     try {
+        const changedTitle = req.body.title + ' - ' + req.user.name
         assignment = await Assignment.findById(req.params.id)
-        assignment.title = req.body.title
+        assignment.title = changedTitle
         assignment.course = req.body.course
         assignment.description = req.body.description
         if (req.body.document != null && req.body.document !== '') {
@@ -85,7 +110,7 @@ router.delete('/:id', checkAuthenticated, async(req, res) => {
     try {
         assignment = await Assignment.findById(req.params.id)
         assignment.remove()
-        res.redirect('back')
+        res.redirect('/assignments')
     } catch {
         res.render('assignments/show', {
             assignment: assignment,

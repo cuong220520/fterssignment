@@ -17,6 +17,7 @@ const assignmentRouter = require('./routes/assignments')
 const courseRouter = require('./routes/courses')
 const loginRouter = require('./routes/login')
 const userRouter = require('./routes/users')
+const majorRouter = require('./routes/majors')
 
 app.use(bodyParser.urlencoded({ limit: '10mb', extended: false }))
 app.use(express.urlencoded({ extended: false }))
@@ -30,7 +31,8 @@ app.use(express.static('public'))
 app.use(session({
     secret: 'secret',
     resave: false,
-    saveUninitialized: false
+    saveUninitialized: false,
+    maxAge: 15 * 60 * 1000
 }))
 app.use(passport.initialize())
 app.use(passport.session())
@@ -56,6 +58,7 @@ app.use('/assignments', assignmentRouter)
 app.use('/courses', courseRouter)
 app.use('/login', loginRouter)
 app.use('/users', userRouter)
+app.use('/majors', majorRouter)
 
 app.listen(process.env.PORT || 3000)
 

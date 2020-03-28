@@ -26,6 +26,10 @@ const assignmentSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         required: true,
         ref: 'User'
+    }, 
+    grade: {
+        type: String,
+        required: true
     }
 })
 

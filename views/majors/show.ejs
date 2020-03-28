@@ -1,0 +1,8 @@
+<h2>Major Profile</h2>
+<p>Name: <%= major.name %></p>
+<% if (coursesInMajor.length > 0) { %> 
+    <h2>Courses In Major</h2>
+    <% coursesInMajor.forEach(course => { %>
+            <p><a href="/courses/<%= course.id %>"><%= course.name %></a></p>
+    <% }) %> 
+<% } %>

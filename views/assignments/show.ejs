@@ -1,5 +1,14 @@
 <h2><%= assignment.title %></h2>
 <p>Course: <%= assignment.course.name %></p>
 <a href="<%= assignment.documentPath %>" download="<%= assignment.title %>">Document</a>
-<p>Author: <%= assignment.author.name %></p>
+<p>Author: <a href="/users/<%= assignment.author.id %>"><%= assignment.author.name %></a></p>
 <p>Description: <%= assignment.description %></p>
+<p>Grade: <%= assignment.grade %></p>   
+
+<% if (user.id == assignment.author.id) { %>
+    <a href="/assignments/<%= assignment.id %>/edit">Update</a>
+    <%- include('../partials/deleteForm', { url: `/assignments/${assignment.id}` }) %>
+<% } %>
+
+<a href="/assignments/<%= assignment.id %>/comment">Comment</a>
+

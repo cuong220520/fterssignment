@@ -1,4 +1,17 @@
 <div>
+    <label>Major</label>
+    <select name="major">
+        <% majors.forEach(major => { %> 
+            <% if (major.id == course.major) { %> 
+                <option selected label="<%= major.name %>" value="<%= major.id %>"></option>
+            <% } else { %> 
+                <option label="<%= major.name %>" value="<%= major.id %>"></option>
+            <% } %> 
+        <% }) %> 
+    </select>
+</div>
+
+<div>
     <label>Course Name</label>
     <input type="text" name="name" value="<%= course.name %>">
 </div>

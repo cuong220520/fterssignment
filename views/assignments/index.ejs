@@ -1,4 +1,19 @@
 <h2>All Assignments</h2>
+
+<form action="" method="get">
+    <label>Title Or Author</label>
+    <input type="text" name="title">
+
+    <select name="grade">
+        <option value="Refer">Refer</option>
+        <option value="Pass">Pass</option>
+        <option value="Merit">Merit</option>
+        <option value="Distinction">Distinction</option>
+    </select>
+
+    <button type="submit">Search</button>
+</form>
+
 <% assignments.forEach(assignment => { %> 
     <p><a href="/assignments/<%= assignment.id %>"><%= assignment.title %></a></p>
 <% }) %> 

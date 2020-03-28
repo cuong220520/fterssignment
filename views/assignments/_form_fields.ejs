@@ -1,6 +1,9 @@
 <div>
     <label>Title</label>
-    <input type="text" name="title" value="<%= assignment.title %>">
+    <select name="title">
+        <option value="Assignment 1">Assignment 1</option>
+        <option value="Assignment 2">Assignment 2</option>
+    </select>
 </div>
 
 <div>
@@ -24,4 +27,14 @@
 <div>
     <label>Description</label>
     <textarea name="description"><%= assignment.description %></textarea>
+</div>
+
+<div>
+    <label>Grade</label>
+    <select name="grade">
+        <option value="Refer">Refer</option>
+        <option value="Pass">Pass</option>
+        <option value="Merit">Merit</option>
+        <option value="Distinction">Distinction</option>
+    </select>
 </div>

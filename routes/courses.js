@@ -2,17 +2,39 @@ const express = require('express')
 const router = express.Router()
 
 const Course = require('../models/course')
+const Assignment = require('../models/assignment')
+const Major = require('../models/major')
 
 const checkAuthenticated = require('../check-authenticated')
 
 router.get('/', checkAuthenticated, async (req, res) => {
-    let courses
-    try {
-        courses = await Course.find().sort('desc')
-    } catch {
-        courses = []
+    let searchOptions = {}
+
+    if (req.query.name != null && req.query.name != '') {
+        searchOptions.name = new RegExp(req.query.name, 'i')
     }
-    res.render('courses/index', { courses: courses })
+
+    if (req.query.code != null && req.query.code != '') {
+        searchOptions.code = new RegExp(req.query.code, 'i')
+    }
+
+    try {
+        const courses = await Course.find(searchOptions)
+        res.render('courses/index', {
+            courses: courses,
+            searchOptions: req.query
+        })
+    } catch {
+        res.redirect('/courses')
+    }
+
+    // let courses
+    // try {
+    //     courses = await Course.find().sort({ code: 'desc' })
+    // } catch {
+    //     courses = []
+    // }
+    // res.render('courses/index', { courses: courses })
 })
 
 router.get('/new', checkAuthenticated, (req, res) => {
@@ -22,7 +44,8 @@ router.get('/new', checkAuthenticated, (req, res) => {
 router.post('/', checkAuthenticated, async (req, res) => {
     const course = new Course({
         name: req.body.name,
-        code: req.body.code
+        code: req.body.code,
+        major: req.body.major
     })
     try {
         const newCourse = await course.save()
@@ -35,7 +58,8 @@ router.post('/', checkAuthenticated, async (req, res) => {
 router.get('/:id', checkAuthenticated, async(req, res) => {
     try {
         const course = await Course.findById(req.params.id)
-        res.render('courses/show', {course: course})
+        const assignments = await Assignment.find({ course: course.id })
+        res.render('courses/show', { course: course, assignmentsByUser: assignments })
     } catch {
         res.redirect('/courses')
     }
@@ -56,6 +80,7 @@ router.put('/:id', checkAuthenticated, async(req, res) => {
         course = await Course.findById(req.params.id)
         course.name = req.body.name
         course.code = req.body.code
+        course.major = req.body.major
         await course.save()
         res.redirect(`/courses/${course.id}`)
     } catch {
@@ -85,10 +110,13 @@ function renderEditPage(res, course, hasError = false) {
     renderFormPage(res, course, 'edit', hasError)
 }
 
-function renderFormPage(res, course, form, hasError = false) {
+async function renderFormPage(res, course, form, hasError = false) {
     try {
+        const majors = await Major.find({})
+
         const params = {
-            course: course
+            course: course,
+            majors: majors
         }
         if (hasError) {
             if (form == 'edit') {

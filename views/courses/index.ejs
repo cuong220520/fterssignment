@@ -1,4 +1,15 @@
 <h2>All courses</h2>
+
+<form action="/courses" method="GET">
+    <label>Course Name</label>
+    <input type="text" name="name">
+
+    <label>Course Code</label>
+    <input type="text" name="code">
+
+    <button type="submit">Search</button>
+</form>
+
 <% courses.forEach(course => { %> 
     <p><a href="/courses/<%= course.id %>"><%= course.name %></a></p>
 <% }) %> 
